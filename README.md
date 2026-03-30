@@ -197,7 +197,7 @@ ldr-adaptive-led/
 
 ## 👦 About This Project
 
-Built by **Aryan** (age 12) with his dad **Sumit** as part of a summer maker series.  
-We're exploring sensors, IoT, and AI — one circuit at a time — from Bangalore, India.
+Built by **Aryan**(Creator) with his Dad(Creative Director) as part of a summer maker series.  
+We're exploring sensors, IoT, and AI — one circuit at a time.
 
 *Part of Month 1: Sensor Exploration — Week 2 (LDR)*
