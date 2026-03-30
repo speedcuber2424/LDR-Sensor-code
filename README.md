@@ -109,8 +109,7 @@ This project uses a Light Dependent Resistor (LDR) to automatically control LED 
 
 ## 🎬 As Seen On
 
-**[Your Channel Name]** — English-language Arduino & IoT for Indian kids.  
-*(Link to video once uploaded)*
+Aryan Builds — English-language Arduino & IoT for kids. 
 
 ---
 
