@@ -15,8 +15,7 @@ void loop() {
   int analogValue = analogRead(A0);     // Reading the LDR input 
 
   // map function to scale the analog value from 0 - 1023 to 0 - 255 for brightness control 
-  int bright = map(analogValue, 0, 1023, 0, 255);
-  bright = constrain(bright, 0, 255);
+  int bright = map(analogValue, 0, 1023, 255, 0);
 
   analogWrite(ledPin, bright);       // sending brightness value to LED
 
@@ -26,19 +25,17 @@ void loop() {
   Serial.print(",  Brightness:  ");
   Serial.println(bright);
 
-  // checking the input LDR signal to decide on the level
-  if (analogValue < 10) {
+  if (analogValue < 100) {
     Serial.println(" - It is Dark outside");
-  } else if (analogValue < 200) {
+  } else if (analogValue < 300) {
     Serial.println(" - It is Dim light outside");
-  } else if (analogValue < 500) {
+  } else if (analogValue < 550) {
     Serial.println(" - It is Normal light outside");
-  } else if (analogValue < 800) {
+  } else if (analogValue < 750) {
     Serial.println(" - It is Bright outside");
   } else {
     Serial.println(" - It is Too Bright outside");
   }
-
  delay(200);
 
 }
