@@ -1,103 +1,46 @@
-# 💡 LDR Adaptive LED — Arduino R4 Minima
+// LDR 5-LED Light Meter — Arduino R4 Minima
+// Dark → 5 LEDs | Medium → 3 LEDs | Bright → 0 LEDs
 
-> "Can a ₹50 sensor save lives?" — A project from our father-son maker channel.
+const int LDR_PIN = A0;
 
-This project uses a Light Dependent Resistor (LDR) to automatically control LED brightness based on ambient light. Dark room? LED goes bright. Bright room? LED dims down. Just like your phone's auto-brightness — but you built it yourself.
+// 5 LED pins (use any digital pins)
+const int LED_PINS[5] = {2, 3, 4, 5, 6};
 
----
+const int LOW_LIGHT_THRESHOLD  = 300;
+const int HIGH_LIGHT_THRESHOLD = 700;
 
-## 🎬 As Seen On
+void setup() {
+  for (int i = 0; i < 5; i++) {
+    pinMode(LED_PINS[i], OUTPUT);
+  }
+  Serial.begin(9600);
+  Serial.println("LDR 5-LED Meter — Starting...");
+}
 
-**[Your Channel Name]** — English-language Arduino & IoT for Indian kids.  
-*(Link to video once uploaded)*
+void setLEDs(int count) {
+  for (int i = 0; i < 5; i++) {
+    digitalWrite(LED_PINS[i], i < count ? HIGH : LOW);
+  }
+}
 
----
+void loop() {
+  int ldrValue = analogRead(LDR_PIN);
 
-## ⚙️ How It Works
+  Serial.print("LDR Value: ");
+  Serial.print(ldrValue);
 
-| Light Condition | LDR Value (approx) | LED Brightness |
-|---|---|---|
-| Low light (dark room) | < 300 | HIGH (255) |
-| Medium light | 300 – 700 | MEDIUM (128) |
-| High light (bright sun / torch) | > 700 | LOW (20) |
+  if (ldrValue < LOW_LIGHT_THRESHOLD) {
+    setLEDs(5);
+    Serial.println("  → DARK → 5 LEDs ON");
 
-The LDR is wired as a **voltage divider** with a 10kΩ resistor. As light increases, resistance drops, and the analog voltage at A0 rises. The Arduino reads this and adjusts the LED brightness via PWM on Pin 9.
+  } else if (ldrValue < HIGH_LIGHT_THRESHOLD) {
+    setLEDs(3);
+    Serial.println("  → MEDIUM → 3 LEDs ON");
 
----
+  } else {
+    setLEDs(0);
+    Serial.println("  → BRIGHT → all LEDs OFF");
+  }
 
-## 🛒 Components Needed
-
-| Component | Quantity | Approx Cost (India) |
-|---|---|---|
-| Arduino UNO R4 Minima | 1 | ₹2,000 |
-| LDR (Light Dependent Resistor) | 1 | ₹10 |
-| 10kΩ resistor | 1 | ₹1 |
-| 220Ω resistor | 1 | ₹1 |
-| LED (any colour) | 1 | ₹5 |
-| Breadboard | 1 | ₹80 |
-| Jumper wires | a few | ₹30 |
-
-**Total: Under ₹150 for just the LDR circuit**
-
----
-
-## 🔌 Circuit Wiring
-
-```
-5V  ──── LDR ──── A0 ──── 10kΩ ──── GND
-                   |
-              (reads here)
-
-Pin 9 ──── 220Ω ──── LED(+) ──── LED(-) ──── GND
-```
-
-| Connection | Detail |
-|---|---|
-| LDR leg 1 | 5V |
-| LDR leg 2 | A0 pin + 10kΩ resistor |
-| 10kΩ other end | GND |
-| LED long leg (+) | Pin 9 via 220Ω resistor |
-| LED short leg (-) | GND |
-
----
-
-## 🚀 Getting Started
-
-1. Clone this repo or download the `.ino` file
-2. Open `ldr_adaptive_led.ino` in **Arduino IDE 2.x**
-3. Select board: **Arduino UNO R4 Minima**
-4. Upload to your board
-5. Open **Serial Monitor** at `9600 baud`
-6. Cover/uncover the LDR and watch the values change live
-
----
-
-## 🔧 Tuning the Thresholds
-
-Every LDR behaves slightly differently depending on your room lighting. Open Serial Monitor and note:
-- The value in your **normal room** → set `LOW_LIGHT_THRESHOLD` just above it
-- The value under a **torch or bright light** → set `HIGH_LIGHT_THRESHOLD` just below it
-
-```cpp
-const int LOW_LIGHT_THRESHOLD  = 300;  // ← tune this
-const int HIGH_LIGHT_THRESHOLD = 700;  // ← tune this
-```
-
----
-
-## 📁 Repo Structure
-
-```
-ldr-adaptive-led/
-├── ldr_adaptive_led.ino   # Main Arduino sketch
-└── README.md              # This file
-```
-
----
-
-## 👦 About This Project
-
-Built by **Aryan** (age 12) with his dad **Sumit** as part of a summer maker series.  
-We're exploring sensors, IoT, and AI — one circuit at a time — from Bangalore, India.
-
-*Part of Month 1: Sensor Exploration — Week 2 (LDR)*
+  delay(200);
+}
