@@ -40,7 +40,6 @@ The LDR and 10kΩ resistor form a **voltage divider**.
 Open at **9600 baud** to watch live LDR and brightness values.
 Great for testing with a phone torch or covering the LDR.
 
-## India-specific test ideas
-- Cover with a dupatta → should max out the LED
+## Test ideas
 - Flash phone torch → LED should dim instantly
 - Try it during a power cut night vs daytime 🌓
