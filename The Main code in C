@@ -1,41 +1,39 @@
+int ledPin = 5;
 
-int ledPin = 5;                  // Selecting pin 5 for PWM output
-
-// the setup function runs only once:
 void setup() {
-
-    Serial.begin(9600); // Initializing and setting the baud rate
-    pinMode(ledPin, OUTPUT);   //pin 5 set to output mode
+  Serial.begin(9600);
+  pinMode(ledPin, OUTPUT);
 }
 
-// the loop routine runs over and over again forever:
 void loop() {
+  int analogValue = analogRead(A0);
 
-  // reads the input on analog pin A0 (value between 0 and 1023)
-  int analogValue = analogRead(A0);     // Reading the LDR input 
+  static int lastValue = -1;
+  if (abs(analogValue - lastValue) > 5) {
 
-  // map function to scale the analog value from 0 - 1023 to 0 - 255 for brightness control 
-  int bright = map(analogValue, 0, 1023, 255, 0);
+    Serial.print("Light: ");
+    Serial.print(analogValue);
+    Serial.print(" | ");
 
-  analogWrite(ledPin, bright);       // sending brightness value to LED
+    if (analogValue < 80) {
+      analogWrite(ledPin, 255);
+      Serial.println("DARK - LED full bright");
+    } else if (analogValue < 200) {
+      analogWrite(ledPin, 150);
+      Serial.println("DIM - LED medium");
+    } else if (analogValue < 320) {
+      analogWrite(ledPin, 60);
+      Serial.println("NORMAL - LED low");
+    } else if (analogValue < 430) {
+      analogWrite(ledPin, 0);
+      Serial.println("BRIGHT - LED off");
+    } else {
+      analogWrite(ledPin, 0);
+      Serial.println("TOO BRIGHT");
+    }
 
- // print out the value
-  Serial.print("Analog Value:  ");
-  Serial.print(analogValue);
-  Serial.print(",  Brightness:  ");
-  Serial.println(bright);
-
-  if (analogValue < 100) {
-    Serial.println(" - It is Dark outside");
-  } else if (analogValue < 300) {
-    Serial.println(" - It is Dim light outside");
-  } else if (analogValue < 550) {
-    Serial.println(" - It is Normal light outside");
-  } else if (analogValue < 750) {
-    Serial.println(" - It is Bright outside");
-  } else {
-    Serial.println(" - It is Too Bright outside");
+    lastValue = analogValue;
   }
- delay(200);
 
+  delay(200);
 }
