@@ -1,46 +1,26 @@
-// LDR 5-LED Light Meter — Arduino R4 Minima
-// Dark → 5 LEDs | Medium → 3 LEDs | Bright → 0 LEDs
+// LDR + LED dimmer — Arduino UNO R4 Minima
+// LDR voltage divider on A0, LED on D9 (PWM)
 
 const int LDR_PIN = A0;
-
-// 5 LED pins (use any digital pins)
-const int LED_PINS[5] = {2, 3, 4, 5, 6};
-
-const int LOW_LIGHT_THRESHOLD  = 300;
-const int HIGH_LIGHT_THRESHOLD = 700;
+const int LED_PIN = 9;   // PWM pin
 
 void setup() {
-  for (int i = 0; i < 5; i++) {
-    pinMode(LED_PINS[i], OUTPUT);
-  }
+  pinMode(LED_PIN, OUTPUT);
   Serial.begin(9600);
-  Serial.println("LDR 5-LED Meter — Starting...");
-}
-
-void setLEDs(int count) {
-  for (int i = 0; i < 5; i++) {
-    digitalWrite(LED_PINS[i], i < count ? HIGH : LOW);
-  }
 }
 
 void loop() {
-  int ldrValue = analogRead(LDR_PIN);
+  int ldrValue = analogRead(LDR_PIN);  // 0 (dark) to 1023 (bright)
 
-  Serial.print("LDR Value: ");
+  // Brighter room = dimmer LED (inverse map)
+  int brightness = map(ldrValue, 0, 1023, 255, 0);
+
+  analogWrite(LED_PIN, brightness);
+
+  Serial.print("LDR: ");
   Serial.print(ldrValue);
+  Serial.print("  |  LED brightness: ");
+  Serial.println(brightness);
 
-  if (ldrValue < LOW_LIGHT_THRESHOLD) {
-    setLEDs(5);
-    Serial.println("  → DARK → 5 LEDs ON");
-
-  } else if (ldrValue < HIGH_LIGHT_THRESHOLD) {
-    setLEDs(3);
-    Serial.println("  → MEDIUM → 3 LEDs ON");
-
-  } else {
-    setLEDs(0);
-    Serial.println("  → BRIGHT → all LEDs OFF");
-  }
-
-  delay(200);
+  delay(100);
 }
