@@ -1,26 +1,44 @@
-// LDR + LED dimmer — Arduino UNO R4 Minima
-// LDR voltage divider on A0, LED on D9 (PWM)
 
-const int LDR_PIN = A0;
-const int LED_PIN = 9;   // PWM pin
+int ledPin = 5;                  // Selecting pin 5 for PWM output
 
+// the setup function runs only once:
 void setup() {
-  pinMode(LED_PIN, OUTPUT);
-  Serial.begin(9600);
+
+    Serial.begin(9600); // Initializing and setting the baud rate
+    pinMode(ledPin, OUTPUT);   //pin 5 set to output mode
 }
 
+// the loop routine runs over and over again forever:
 void loop() {
-  int ldrValue = analogRead(LDR_PIN);  // 0 (dark) to 1023 (bright)
 
-  // Brighter room = dimmer LED (inverse map)
-  int brightness = map(ldrValue, 0, 1023, 255, 0);
+  // reads the input on analog pin A0 (value between 0 and 1023)
+  int analogValue = analogRead(A0);     // Reading the LDR input 
 
-  analogWrite(LED_PIN, brightness);
+  // map function to scale the analog value from 0 - 1023 to 0 - 255 for brightness control 
+  int bright = map(analogValue, 0, 1023, 0, 255);
+  bright = constrain(bright, 0, 255);
 
-  Serial.print("LDR: ");
-  Serial.print(ldrValue);
-  Serial.print("  |  LED brightness: ");
-  Serial.println(brightness);
+  analogWrite(ledPin, bright);       // sending brightness value to LED
 
-  delay(100);
+ // print out the value
+  Serial.print("Analog Value:  ");
+  Serial.print(analogValue);
+  Serial.print(",  Brightness:  ");
+  Serial.println(bright);
+
+  // checking the input LDR signal to decide on the level
+  if (analogValue < 10) {
+    Serial.println(" - It is Dark outside");
+  } else if (analogValue < 200) {
+    Serial.println(" - It is Dim light outside");
+  } else if (analogValue < 500) {
+    Serial.println(" - It is Normal light outside");
+  } else if (analogValue < 800) {
+    Serial.println(" - It is Bright outside");
+  } else {
+    Serial.println(" - It is Too Bright outside");
+  }
+
+ delay(200);
+
 }
