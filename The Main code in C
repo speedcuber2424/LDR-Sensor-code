@@ -1,0 +1,50 @@
+// LDR Adaptive LED — Arduino R4 Minima
+// Channel: [Aryan Builds]
+// Logic: Low light → LED bright | Medium light → LED medium | High light → LED dim
+// LDR wired as voltage divider: 5V → LDR → A0 → 10kΩ → GND
+
+const int LDR_PIN = A0;      // LDR input
+const int LED_PIN = 9;       // PWM-capable pin for LED
+
+// Light thresholds (tune these after testing your LDR)
+const int LOW_LIGHT_THRESHOLD    = 300;   // Below this = dark room
+const int HIGH_LIGHT_THRESHOLD   = 700;   // Above this = bright light
+
+// LED brightness levels (0–255)
+const int BRIGHTNESS_HIGH   = 255;   // Full brightness in dark
+const int BRIGHTNESS_MEDIUM = 128;   // Half brightness in medium light
+const int BRIGHTNESS_LOW    = 20;    // Dim in bright light
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("LDR Adaptive LED — Starting...");
+}
+
+void loop() {
+  int ldrValue = analogRead(LDR_PIN);
+
+  Serial.print("LDR Value: ");
+  Serial.print(ldrValue);
+
+  int brightness;
+
+  if (ldrValue < LOW_LIGHT_THRESHOLD) {
+    // LOW LIGHT → LED HIGH
+    brightness = BRIGHTNESS_HIGH;
+    Serial.println("  → LOW light detected → LED: HIGH");
+
+  } else if (ldrValue < HIGH_LIGHT_THRESHOLD) {
+    // MEDIUM LIGHT → LED MEDIUM
+    brightness = BRIGHTNESS_MEDIUM;
+    Serial.println("  → MEDIUM light detected → LED: MEDIUM");
+
+  } else {
+    // HIGH LIGHT → LED LOW
+    brightness = BRIGHTNESS_LOW;
+    Serial.println("  → HIGH light detected → LED: LOW");
+  }
+
+  analogWrite(LED_PIN, brightness);
+  delay(200);  // Small delay to stabilize readings
+}
